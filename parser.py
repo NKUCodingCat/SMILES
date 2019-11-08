@@ -51,7 +51,7 @@ chain = pp.OneOrMore(pp.Optional(bond) + ( atom ^ ringclosure )) #
 smiles = pp.Forward()
 branch = pp.Forward()
 smiles << atom + pp.ZeroOrMore(chain ^ branch)
-branch << (pp.Literal('(') + (bond ^ pp.OneOrMore(smiles)) + pp.Literal(')'))
+branch << pp.Literal('(') + pp.Optional(bond) +  pp.OneOrMore(smiles) + pp.Literal(')')
 
 
 
