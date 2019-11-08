@@ -32,13 +32,13 @@ ringclosure = pp.Optional( pp.Literal('%') + pp.Regex('[1-9]')) + pp.Regex('[1-9
 charge = (pp.Literal('-') + pp.Optional( pp.oneOf( ['-', ] + list(map(str, range(0, 17))) ) ) ) ^\
          (pp.Literal('+') + pp.Optional( pp.oneOf( ['+', ] + list(map(str, range(0, 17))) ) ) ) #
 chiralclass = pp.Optional(
-                pp.Literal('@') + ( \
-                  pp.Optional(pp.Literal('@')) ^ \
+                 pp.Literal('@') ^ pp.Literal('@@') ^ \
+                (pp.Literal('@') + ( \
                   ( pp.oneOf(['TH', 'AL'])  + pp.Regex('[1-2]') ) ^\
                   ( pp.Literal('SP') + pp.Regex('[1-3]') ) ^\
                   ( pp.Literal('TB') + pp.oneOf(list(map(str, range(1, 21)))) ) ^\
-                  ( pp.Literal('OH') + pp.oneOf(list(map(str, range(1, 30)))) ) 
-                )
+                  ( pp.Literal('OH') + pp.oneOf(list(map(str, range(1, 31)))) ) 
+                )) 
             ) #
 atomspec = pp.Literal('[') +\
                 pp.Optional(isotope) + \
