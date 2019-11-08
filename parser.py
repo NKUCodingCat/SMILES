@@ -15,18 +15,16 @@ atomclass = pp.Regex(':[0-9]+') #
 bond = pp.oneOf(['-','=','#','$',':','/','\\','.'])
 organicsymbol = pp.oneOf(['B','Br','C','Cl','N','O','P','S','F','I'])
 aromaticsymbol = pp.oneOf(['b','c','n','o','p','s'])
-elementsymbol = pp.oneOf(['Al','Am','Sb','Ar','33','At','Ba','Bk','Be','Bi',
-                           'Bh','B','Br','Cd','Ca','Cf','C','Ce','Cs','Cl','Cr',
-                           'Co','Cu','Cm','Ds','Db','Dy','Es','Er','Eu','Fm',
-                           'F','Fr','Gd','Ga','Ge','Au','Hf','Hs','He','Ho','H',
-                           'In','I','Ir','Fe','Kr','La','Lr','Pb','Li','Lu','Mg',
-                           'Mn','Mt','Md','Hg','Mo','Nd','Ne','Np','Ni','Nb','N',
-                           'No','Os','O','Pd','P','Pt','Pu','Po','K','Pr','Pm',
-                           'Pa','Ra','Rn','Re','Rh','Rg','Rb','Ru','Rf','Sm',
-                           'Sc','Sg','Se','Si','Ag','Na','Sr','S','Ta','Tc',
-                           'Te','Tb','Tl','Th','Tm','Sn','Ti','W','Uub','Uuh',
-                           'Uuo','Uup','Uuq','Uus','Uut','Uuu','U','V','Xe','Yb',
-                           'Y','Zn','Zr',])
+elementsymbol = pp.oneOf(['H',  'He', 'Li', 'Be', 'B',  'C',  'N',  'O',  'F',  'Ne', 'Na', 'Mg', 
+                          'Al', 'Si', 'P',  'S',  'Cl', 'Ar', 'K',  'Ca', 'Sc', 'Ti', 'V',  'Cr',
+                          'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr',
+                          'Rb', 'Sr', 'Y',  'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd',
+                          'In', 'Sn', 'Sb', 'Te',  'I', 'Xe', 'Cs', 'Ba', 'Hf', 'Ta', 'W',  'Re',
+                          'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn', 'Fr',
+                          'Ra', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds', 'Rg', 'Cn', 'Fl', 'Lv',
+                          'La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er',
+                          'Tm', 'Yb', 'Lu', 'Ac', 'Th', 'Pa', 'U',  'Np', 'Pu', 'Am', 'Cm', 'Bk',
+                          'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr'])
 hcount = pp.Literal('H') + pp.Optional(pp.Regex('[0-9]')) # 
 ringclosure = pp.Optional( pp.Literal('%') + pp.Regex('[1-9]')) + pp.Regex('[1-9]')
 charge = (pp.Literal('-') + pp.Optional( pp.oneOf( ['-', ] + list(map(str, range(0, 17))) ) ) ) ^\
