@@ -4,13 +4,14 @@
 A parser of SMILES chemical notation using pyparsing module the EBNF of SMILES
 is taken from:
 https://metamolecular.com/cheminformatics/smiles/railroad-diagram/
+Code Refined by NKUCodingCat@Nov8,2019
 """
 
 import pyparsing as pp
 
 # Grammar definition
-isotope = pp.Regex('[1-9][0-9]?[0-9]?')
-atomclass = pp.Regex(':[0-9]+')
+isotope = pp.Word(pp.nums) #
+atomclass = pp.Regex(':[0-9]+') #
 bond = pp.oneOf(['-','=','#','$',':','/','\\','.'])
 organicsymbol = pp.oneOf(['B','Br','C','Cl','N','O','P','S','F','I'])
 aromaticsymbol = pp.oneOf(['b','c','n','o','p','s'])
@@ -26,13 +27,26 @@ elementsymbol = pp.oneOf(['Al','Am','Sb','Ar','33','At','Ba','Bk','Be','Bi',
                            'Te','Tb','Tl','Th','Tm','Sn','Ti','W','Uub','Uuh',
                            'Uuo','Uup','Uuq','Uus','Uut','Uuu','U','V','Xe','Yb',
                            'Y','Zn','Zr',])
-hcount = pp.Regex('H[0-9]+')
-ringclosure = pp.Optional( pp.Literal('%') + pp.oneOf(['1 2 3 4 5 6 7 8 9'])) + pp.oneOf(['0 1 2 3 4 5 6 7 8 9'])
-charge = (pp.Literal('-') +  pp.Optional( pp.oneOf(['-02-9']) ^ pp.Literal('1') + pp.Optional(pp.oneOf(['0-5'])) )) ^ pp.Literal('+') + pp.Optional( pp.oneOf(['+02-9']) ^ pp.Literal('1') + pp.Optional(pp.oneOf('[0-5]')) )
-chiralclass = pp.Optional(pp.Literal('@') + pp.Optional( pp.Literal('@')) ^ ( pp.Literal('TH') ^ pp.Literal('AL') ) + pp.oneOf('[1-2]') ^ pp.Literal('SP') + pp.oneOf('[1-3]') ^ pp.Literal('TB') + ( pp.Literal('1') + pp.Optional(pp.oneOf('[0-9]')) ^ pp.Literal('2') + pp.Optional(pp.Literal('0')) ^ pp.oneOf('[3-9]') ) ^ pp.Literal('OH') + ( ( pp.Literal('1') ^ pp.Literal('2') ) + pp.Optional(pp.oneOf('[0-9]')) ^ pp.Literal('3') + pp.Optional(pp.Literal('0')) ^ pp.oneOf('[4-9]')) )
-atomspec = pp.Literal('[') +  pp.Optional(isotope) + ( pp.Literal('se') ^ pp.Literal('as') ^ aromaticsymbol ^ elementsymbol ^ pp.Literal('*') ) + pp.Optional(chiralclass)+ pp.Optional(hcount)+pp.Optional(charge)+ pp.Optional(atomclass) + pp.Literal(']')
-atom = organicsymbol ^ aromaticsymbol ^ pp.Literal('*') ^ atomspec
-chain = pp.OneOrMore(pp.Optional(bond) + ( atom ^ ringclosure ))
+hcount = pp.Literal('H') + pp.Optional(pp.Regex('[0-9]')) # 
+ringclosure = pp.Optional( pp.Literal('%') + pp.Regex('[1-9]')) + pp.Regex('[1-9]')
+charge = (pp.Literal('-') + pp.Optional( pp.oneOf(['-', ] + list(map(str, range(1, 21)))) ) ) ^\
+         (pp.Literal('+') + pp.Optional( pp.oneOf(['+', ] + list(map(str, range(1, 21)))) ) ) #
+chiralclass = pp.Optional(
+                pp.Literal('@') + ( \
+                  pp.Optional(pp.Literal('@')) ^ \
+                  ( pp.oneOf(['TH', 'AL'])  + pp.Regex('[1-2]') ) ^\
+                  ( pp.Literal('SP') + pp.Regex('[1-3]') ) ^\
+                  ( pp.Literal('TB') + pp.oneOf(list(map(str, range(1, 21)))) ) ^\
+                  ( pp.Literal('OH') + pp.oneOf(list(map(str, range(1, 30)))) ) 
+                )
+            ) #
+atomspec = pp.Literal('[') +\
+                pp.Optional(isotope) + \
+                ( pp.Literal('se') ^ pp.Literal('as') ^ aromaticsymbol ^ elementsymbol ^ pp.Literal('*') ) + \
+                pp.Optional(chiralclass)+ pp.Optional(hcount) + pp.Optional(charge) + pp.Optional(atomclass) + \
+           pp.Literal(']') #
+atom = organicsymbol ^ aromaticsymbol ^ pp.Literal('*') ^ atomspec #
+chain = pp.OneOrMore(pp.Optional(bond) + ( atom ^ ringclosure )) #
 ## This looks fucked up
 smiles = pp.Forward()
 branch = pp.Forward()
@@ -46,7 +60,7 @@ def IsValidSMILES(text):
     A simple SMILES validator
     """
     is_valid = False
-    results = smiles.parseString(text)
+    results = smiles.parseString(text, parseAll=True)
     if results:
         is_valid = True
         return(is_valid)
@@ -55,3 +69,10 @@ def IsValidSMILES(text):
 if __name__ == '__main__':
     astr = 'CC(CC)CO[Na+]'
     print(IsValidSMILES(astr)) 
+    astr = 'F[C@H](C1=C([NH3+])C=C(F)C=C1)C2=CC([O-])=CC=C2'
+    print(IsValidSMILES(astr)) 
+    astr = 'F[C@H](C1=CC=C(F)C=C1)C2=CC=CC=C2'
+    print(IsValidSMILES(astr)) 
+    astr = 'F[14C@@H](C1=CC=C(F)C=C1)C2=CC=CC=C2'
+    print(IsValidSMILES(astr)) 
+    
