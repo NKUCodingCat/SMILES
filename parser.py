@@ -29,8 +29,8 @@ elementsymbol = pp.oneOf(['Al','Am','Sb','Ar','33','At','Ba','Bk','Be','Bi',
                            'Y','Zn','Zr',])
 hcount = pp.Literal('H') + pp.Optional(pp.Regex('[0-9]')) # 
 ringclosure = pp.Optional( pp.Literal('%') + pp.Regex('[1-9]')) + pp.Regex('[1-9]')
-charge = (pp.Literal('-') + pp.Optional( pp.oneOf(['-', ] + list(map(str, range(1, 21)))) ) ) ^\
-         (pp.Literal('+') + pp.Optional( pp.oneOf(['+', ] + list(map(str, range(1, 21)))) ) ) #
+charge = (pp.Literal('-') + pp.Optional( pp.oneOf( ['-', ] + list(map(str, range(0, 17))) ) ) ) ^\
+         (pp.Literal('+') + pp.Optional( pp.oneOf( ['+', ] + list(map(str, range(0, 17))) ) ) ) #
 chiralclass = pp.Optional(
                 pp.Literal('@') + ( \
                   pp.Optional(pp.Literal('@')) ^ \
